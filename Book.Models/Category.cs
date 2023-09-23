@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookWeb.Models
+namespace Book.Models
 {
     public class Category
     {
@@ -11,7 +11,7 @@ namespace BookWeb.Models
         [DisplayName("Category Name")]
         public string Name { get; set; }
         [DisplayName("Display Order")]
-        [Range(1,100,ErrorMessage ="Display order must be between 0 - 100")]
+        [Range(1, 100, ErrorMessage = "Display order must be between 0 - 100")]
         public int DisplayOrder { get; set; }
 
     }
