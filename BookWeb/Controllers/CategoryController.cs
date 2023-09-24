@@ -1,20 +1,21 @@
 ﻿using Book.Models;
 using Book.DataAccess.Data;
 using Microsoft.AspNetCore.Mvc;
+using Book.DataAccess.Repository.IRepository;
 
 namespace BookWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDBContext _db;
-        public CategoryController(ApplicationDBContext db)
+        private readonly ICategoryRepository _CategoryRepo;
+        public CategoryController(ICategoryRepository db)
         {
-            _db = db;
+            _CategoryRepo = db;
         }
 
         public IActionResult Index()
         {
-            List<Category> objCategories = _db.Categories.ToList();
+            List<Category> objCategories = _CategoryRepo.GetAll().ToList();
             return View(objCategories);
         }
 
@@ -36,8 +37,8 @@ namespace BookWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _CategoryRepo.Add(obj);
+                _CategoryRepo.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
@@ -51,7 +52,8 @@ namespace BookWeb.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDB = _db.Categories.Find(id);
+            Category? categoryFromDB = _CategoryRepo.Get(u=>u.Id == id);
+            //Category? categoryFromDB = _db.Categories.Find(id);
             //Category? categoryFromDB1 = _db.Categories.FirstOrDefault(U => U.Id == id);
             //Category? categoryFromDB2 = _db.Categories.Where(U=>U.Id == id).FirstOrDefault();
             if (categoryFromDB == null)
@@ -66,8 +68,8 @@ namespace BookWeb.Controllers
         {
             if(ModelState.IsValid)
             {
-                _db.Categories.Update(obj);
-                _db.SaveChanges();
+                _CategoryRepo.Update(obj);
+                _CategoryRepo.Save();
                 TempData["success"] = "Category updated successfully";
                 return RedirectToAction("Index");
             }
@@ -81,7 +83,7 @@ namespace BookWeb.Controllers
                 return NotFound(); 
             }
 
-            Category? categoryFromDB = _db.Categories.Find(id); 
+            Category? categoryFromDB = _CategoryRepo.Get(u=> u.Id == id); 
             if (categoryFromDB == null)
             {
                 return NotFound();
@@ -92,8 +94,8 @@ namespace BookWeb.Controllers
         [HttpPost]
         public IActionResult Delete(Category obj)
         {
-            _db.Categories.Remove(obj);
-            _db.SaveChanges();
+            _CategoryRepo.Remove(obj);
+            _CategoryRepo.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
         }
