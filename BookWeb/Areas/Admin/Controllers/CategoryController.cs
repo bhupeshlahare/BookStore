@@ -3,8 +3,9 @@ using Book.DataAccess.Data;
 using Microsoft.AspNetCore.Mvc;
 using Book.DataAccess.Repository.IRepository;
 
-namespace BookWeb.Controllers
+namespace BookWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -27,7 +28,7 @@ namespace BookWeb.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if(obj.Name == "Test" || obj.Name == "test")
+            if (obj.Name == "Test" || obj.Name == "test")
             {
                 ModelState.AddModelError("name", "Test is an invalid value");
             }
@@ -42,17 +43,17 @@ namespace BookWeb.Controllers
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
-           return View();  
+            return View();
         }
 
         public IActionResult Edit(int? id)
         {
-            if(id == null || id == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
 
-            Category? categoryFromDB = _unitOfWork.Category.Get(u=>u.Id == id);
+            Category? categoryFromDB = _unitOfWork.Category.Get(u => u.Id == id);
             //Category? categoryFromDB = _db.Categories.Find(id);
             //Category? categoryFromDB1 = _db.Categories.FirstOrDefault(U => U.Id == id);
             //Category? categoryFromDB2 = _db.Categories.Where(U=>U.Id == id).FirstOrDefault();
@@ -64,9 +65,9 @@ namespace BookWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Category obj) 
+        public IActionResult Edit(Category obj)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _unitOfWork.Category.Update(obj);
                 _unitOfWork.Save();
@@ -78,12 +79,12 @@ namespace BookWeb.Controllers
 
         public IActionResult Delete(int? id)
         {
-            if(id == null || id == 0)
-            { 
-                return NotFound(); 
+            if (id == null || id == 0)
+            {
+                return NotFound();
             }
 
-            Category? categoryFromDB = _unitOfWork.Category.Get(u=> u.Id == id); 
+            Category? categoryFromDB = _unitOfWork.Category.Get(u => u.Id == id);
             if (categoryFromDB == null)
             {
                 return NotFound();
