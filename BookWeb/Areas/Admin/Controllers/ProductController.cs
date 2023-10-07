@@ -1,5 +1,6 @@
 ﻿using Book.DataAccess.Repository.IRepository;
 using Book.Models;
+using Book.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -27,14 +28,20 @@ namespace BookWeb.Areas.Admin.Controllers
             });
 
             //ViewBag.CategoryList = CategoryList;
-            return View();
+
+            ProductVM productVM = new()
+            {
+                CategoryList = CategoryList,
+                Product = new Product()
+            };
+            return View(productVM);
         }
         [HttpPost]
-        public IActionResult Create(Product obj) 
+        public IActionResult Create(ProductVM obj) 
         {
             if (ModelState.IsValid) 
             {
-                _unitOfWork.Product.Add(obj);
+                _unitOfWork.Product.Add(obj.Product);
                 _unitOfWork.Save();
                 TempData["success"] = "Product created successfully";
                 return RedirectToAction("Index");
