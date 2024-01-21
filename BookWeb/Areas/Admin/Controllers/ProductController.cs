@@ -66,7 +66,7 @@ namespace BookWeb.Areas.Admin.Controllers
                         file.CopyTo(fileStream);
                     }
 
-                    obj.Product.ImageUrl = @"images\product" + fileName;
+                    obj.Product.ImageUrl = @"\images\product\" + fileName;
                 }
 
                 _unitOfWork.Product.Add(obj.Product);
