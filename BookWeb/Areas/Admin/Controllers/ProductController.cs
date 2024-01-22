@@ -4,6 +4,7 @@ using Book.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookWeb.Areas.Admin.Controllers
 {
@@ -61,6 +62,18 @@ namespace BookWeb.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
+                    if(!string.IsNullOrEmpty(obj.Product.ImageUrl))
+                    {
+                        //delete old image
+                        var oldImagePath = Path.Combine(wwwRootPath,obj.Product.ImageUrl.Trim('\\'));
+
+                        if(System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+
+                    }
+
                     using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
@@ -69,7 +82,15 @@ namespace BookWeb.Areas.Admin.Controllers
                     obj.Product.ImageUrl = @"\images\product\" + fileName;
                 }
 
-                _unitOfWork.Product.Add(obj.Product);
+                if(obj.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(obj.Product);
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(obj.Product);
+                }
+                
                 _unitOfWork.Save();
                 TempData["success"] = "Product created successfully";
                 return RedirectToAction("Index");
