@@ -20,7 +20,7 @@ namespace BookWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> objProducts = _unitOfWork.Product.GetAll().ToList();
+            List<Product> objProducts = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
             return View(objProducts);
         }
         public IActionResult Upsert(int? id)
