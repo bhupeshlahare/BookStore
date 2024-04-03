@@ -189,5 +189,15 @@ namespace BookWeb.Areas.Admin.Controllers
             TempData["success"] = "Product deleted successfully";
             return RedirectToAction("Index");
         }
+
+        #region API Calls
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Product> objProducts = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new { data = objProducts });
+        }
+
+        #endregion
     }
 }
